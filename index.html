@@ -90,83 +90,23 @@
 
 
 				
-					// //Maak per 5 elementen uit de array een div aan met x-breedte en y-hoogte en geef deze styling mee
-					// var element = document.createElement("div");
-					// element.className = 'element';
-					// element.style.backgroundColor = 'rgba(0,127,127,0.5)';
-					// element.style.width = (table[i+3] - table[i+1]) + "px";
-					// element.style.height = (table[i+4] - table[i+2]) + "px";
-					// element.textContent = table[i];
-					// element.ondblclick = function(){window.location = ("http://77.169.186.211:20081/hzbwnature/wiki/index.php/" + this.innerHTML);};
-// 					
-					// //positioneer object en voeg toe aan de scene
-					// var object = new THREE.CSS3DObject( element );
-					// object.position.x = (table[i+1] + (table[i+3] - table[i+1])/2); 
-					// object.position.y = "-" + (table[i+2] + (table[i+4] - table[i+2])/2);
-					// object.position.z = 100;
-					// scene.add( object );
+					//Maak per 5 elementen uit de array een div aan met x-breedte en y-hoogte en geef deze styling mee
+					var element = document.createElement("div");
+					element.className = 'element';
+					element.style.backgroundColor = 'rgba(0,127,127,0.5)';
+					element.style.width = (table[i+3] - table[i+1]) + "px";
+					element.style.height = (table[i+4] - table[i+2]) + "px";
+					element.textContent = table[i];
+					element.ondblclick = function(){window.location = ("http://77.169.186.211:20081/hzbwnature/wiki/index.php/" + this.innerHTML);};
 					
-									var container, separation = 100, amountX = 50, amountY = 50,
-				particles, particle;
-
-				container = document.createElement('div');
-				document.body.appendChild(container);
-
-				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.z = 100;
-
-				scene = new THREE.Scene();
-
-				renderer = new THREE.CanvasRenderer();
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				container.appendChild( renderer.domElement );
-
-				// particles
-
-				var PI2 = Math.PI * 2;
-				var material = new THREE.SpriteCanvasMaterial( {
-
-					color: 0xffffff,
-					program: function ( context ) {
-
-						context.beginPath();
-						context.arc( 0, 0, 0.5, 0, PI2, true );
-						context.fill();
-
-					}
-
-				} );
-
-				var geometry = new THREE.Geometry();
-
-				for ( var i = 0; i < 100; i ++ ) {
-
-					particle = new THREE.Sprite( material );
-					particle.position.x = Math.random() * 2 - 1;
-					particle.position.y = Math.random() * 2 - 1;
-					particle.position.z = Math.random() * 2 - 1;
-					particle.position.normalize();
-					particle.position.multiplyScalar( Math.random() * 10 + 450 );
-					particle.scale.x = particle.scale.y = 10;
-					scene.add( particle );
-
-					geometry.vertices.push( particle.position );
-
-				}
-
-				// lines
-
-				var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 0.5 } ) );
-				scene.add( line );
-
-
+					//positioneer object en voeg toe aan de scene
+					var object = new THREE.CSS3DObject( element );
+					object.position.x = (table[i+1] + (table[i+3] - table[i+1])/2); 
+					object.position.y = "-" + (table[i+2] + (table[i+4] - table[i+2])/2);
+					object.position.z = 100;
+					scene.add( object );
 					
-					// var testLine = new THREE.Line3();
-					// var start = new THREE.Vector3(0,0,0);
-					// var end   = new THREE.Vector3(100,100,0);
-					// testLine.set(start,end);
-					// scene.add(testLine);
-
+									
 				}
 			
 				// push objecten naar de renderer om weergegeven te worden.
