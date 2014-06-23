@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<title>EMONT</title>
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body {
+				background-color: #000;
+				margin: 0;
+				font-family: Helvetica, sans-serif;
+				overflow: hidden;
+			}
+			.element {
+
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.5);
+				border: 1px solid rgba(127,255,255,0.25);
+				text-align: center;
+				cursor: default;
+			}
+
+			.element:hover {
+				box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+				border: 1px solid rgba(127,255,255,0.75);
+			}
+		</style>
+	</head>
+	<body>
+		<script src="build/three.min.js"></script>
+		<script src="examples/js/libs/tween.min.js"></script>
+		<script src="examples/js/controls/TrackballControls.js"></script>
+		<script src="examples/js/renderers/CSS3DRenderer.js"></script>
+
+		<div id="container">&nbsp;</div>
+
+		<script>
+			//Image-map data - syntax: <Paginanaam, x1(beginpunt x-as), y1(beginpunt y-as), x2(eindpunt x-as), y2(eindpunt y-as)
+			var table = [ 
+			"Hoogwaterbescherming", 24, 24, 1492, 1258,
+			"Reflecterend orgaan", 885, 63, 1185, 223, 
+			"Evalueren", 1011, 175, 1111, 214, 
+			"Omgaan met verstoringen", 937, 104, 1175, 143, 
+			"Onderzoeksinstituten", 885, 971, 1185, 1132, 
+			"Omgaan met verstoringen", 937, 1011, 1175, 1050,
+			"Onderzoeksprogramma", 948, 1083, 1167, 1122, 
+			"Uitvoerend orgaan uitvoeren", 830, 647, 1224, 863, 
+			"Omgaan met verstoringen", 935, 688, 1173, 727, 
+			"Interveniëren (inventariseren omgeving - ontwerpen uitvoeren - beheer en onderhoud)", 882, 761, 1216, 854, 
+			"Controlerend orgaan uitvoeren",816, 315, 1252, 514,
+			"Monitoren", 1142, 452, 1244, 491,
+			"Plannen (definiëren project)", 868, 438, 1043, 504,
+			"Omgaan met verstoringen", 963, 355, 1201, 394, 
+			"Omgaan met verstoringen", 119, 99, 357, 138, 
+			"Minimaliseren van de gevolgen van verstoringen", 440, 65, 763, 167, 
+			"Controlerend orgaan toetsen", 120, 318, 609, 514, 
+			"Interpreteren toets", 427, 453, 601, 492, 
+			"Toetsen (wettelijke opdracht)", 172, 439, 362, 505, 
+			"Omgaan met verstoringen", 271, 358, 509, 397, 
+			"Uitvoerend orgaan toetsen", 223, 662, 524, 850, 
+			"Omgaan met verstoringen", 276, 702, 514, 741, 
+			"Toetsen (analyseren/onderzoeken)", 276, 774, 516, 840, 
+			"Systeem", 133, 922, 626, 1248, 
+			"Processen (natuurlijk en menselijk)", 185, 1069, 407, 1135, 
+			"Subconditie n", 463, 1187, 618, 1238, 
+			"Subconditie 1", 463, 962, 618, 1013
+			];
+
+			//Initialiseren objecten en rendering
+			var camera, scene, renderer;
+			var controls;
+
+			var objects = [];
+			var targets = { grid: [] };
+
+			init();
+			animate();
+
+			function init() {
+
+				//Maak scene aan en initialiseer de camera
+				camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.z = 1000;
+
+				scene = new THREE.Scene();
+
+				for ( var i = 0; i < table.length; i += 5 ) {
+
+
+				
+					// //Maak per 5 elementen uit de array een div aan met x-breedte en y-hoogte en geef deze styling mee
+					// var element = document.createElement("div");
+					// element.className = 'element';
+					// element.style.backgroundColor = 'rgba(0,127,127,0.5)';
+					// element.style.width = (table[i+3] - table[i+1]) + "px";
+					// element.style.height = (table[i+4] - table[i+2]) + "px";
+					// element.textContent = table[i];
+					// element.ondblclick = function(){window.location = ("http://77.169.186.211:20081/hzbwnature/wiki/index.php/" + this.innerHTML);};
+// 					
+					// //positioneer object en voeg toe aan de scene
+					// var object = new THREE.CSS3DObject( element );
+					// object.position.x = (table[i+1] + (table[i+3] - table[i+1])/2); 
+					// object.position.y = "-" + (table[i+2] + (table[i+4] - table[i+2])/2);
+					// object.position.z = 100;
+					// scene.add( object );
+					
+									var container, separation = 100, amountX = 50, amountY = 50,
+				particles, particle;
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.z = 100;
+
+				scene = new THREE.Scene();
+
+				renderer = new THREE.CanvasRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				// particles
+
+				var PI2 = Math.PI * 2;
+				var material = new THREE.SpriteCanvasMaterial( {
+
+					color: 0xffffff,
+					program: function ( context ) {
+
+						context.beginPath();
+						context.arc( 0, 0, 0.5, 0, PI2, true );
+						context.fill();
+
+					}
+
+				} );
+
+				var geometry = new THREE.Geometry();
+
+				for ( var i = 0; i < 100; i ++ ) {
+
+					particle = new THREE.Sprite( material );
+					particle.position.x = Math.random() * 2 - 1;
+					particle.position.y = Math.random() * 2 - 1;
+					particle.position.z = Math.random() * 2 - 1;
+					particle.position.normalize();
+					particle.position.multiplyScalar( Math.random() * 10 + 450 );
+					particle.scale.x = particle.scale.y = 10;
+					scene.add( particle );
+
+					geometry.vertices.push( particle.position );
+
+				}
+
+				// lines
+
+				var line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 0.5 } ) );
+				scene.add( line );
+
+
+					
+					// var testLine = new THREE.Line3();
+					// var start = new THREE.Vector3(0,0,0);
+					// var end   = new THREE.Vector3(100,100,0);
+					// testLine.set(start,end);
+					// scene.add(testLine);
+
+				}
+			
+				// push objecten naar de renderer om weergegeven te worden.
+				for ( var i = 0; i < objects.length; i ++ ) {
+
+					var object = new THREE.Object3D();
+
+					targets.grid.push( object );
+
+				}
+
+				//Initialisser renderer en plaats in window
+				renderer = new THREE.CSS3DRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.domElement.style.position = 'absolute';
+				document.getElementById( 'container' ).appendChild( renderer.domElement );
+
+				//Initialiseer de controls en voeg aan eventlistener toe
+				controls = new THREE.TrackballControls( camera, renderer.domElement );
+				controls.rotateSpeed = 0.5;
+				controls.minDistance = 500;
+				controls.maxDistance = 6000;
+				controls.addEventListener( 'change', render );
+
+
+				transform( targets.grid, 5000 );
+
+				//Voeg eventlistener toe voor het resizen van windows
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			//Animatie-logica, nu niet benut VERWIJDEREN BREEKT CODE MOMENTEEL!
+			function transform( targets, duration ) {
+
+				TWEEN.removeAll();
+
+				for ( var i = 0; i < objects.length; i ++ ) {
+
+					var object = objects[ i ];
+					var target = targets[ i ];
+
+					new TWEEN.Tween( object.position )
+						.to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+						.easing( TWEEN.Easing.Exponential.InOut )
+						.start();
+
+					new TWEEN.Tween( object.rotation )
+						.to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
+						.easing( TWEEN.Easing.Exponential.InOut )
+						.start();
+
+				}
+
+				new TWEEN.Tween( this )
+					.to( {}, duration * 2 )
+					.onUpdate( render )
+					.start();
+
+			}
+
+			//Eventlistener voor resizen van window
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				render();
+
+			}
+
+			//Animeer beweging
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				TWEEN.update();
+
+				controls.update();
+
+			}
+
+			//Render scherm
+			function render() {
+
+				renderer.render( scene, camera );
+
+			}
+		</script>
+	</body>
+</html>
